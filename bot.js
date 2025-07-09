@@ -669,7 +669,7 @@ const ichimokuSection =
 🟣 Are there conflicting signals among indicators? Which one is more reliable in this context?`
 ];
 
- return header + smaSection + emaSection + wmaSection + macdSection + rsiSection + stochRsiSection + kdjSection + williamsSection + cciSection + rocSection + mtmSection + uoSection + adxSection + bbSection + keltnerSection + atrSection + adsocsection + mfiSection + vwapSection + ichimokuSection + extraNotes;
+ return header + smaSection + emaSection + wmaSection + macdSection + rsiSection + stochRsiSection + kdjSection + williamsSection + cciSection + rocSection + mtmSection + uoSection + adxSection + bbSection + keltnerSection + atrSection + adsocsection + mfiSection + vwapSection + ichimokuSection + extraNotesParts;
 }
 
 // --- Command Handler ---
