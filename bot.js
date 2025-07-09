@@ -633,30 +633,30 @@ const ichimokuSection =
 `
 Calculate Values of all thes Indicatotors and Give me Out Put:
 📍 Final Signal Summary
-📉 Trend Direction
-📊 Indicator Behavior Breakdown
-⚠️ Volatility + Breakout Scan
-🌡 Momentum Heatmap
-📈 Volume & OBV Strength
-🧮 Fibonacci Zones
-⏳ Multi-Timeframe Comparison
-🐋 Whale vs Retail Movement
-🕯 Candle Pattern Alerts
-🔵Is there a reversal pattern forming?
-🕰 Best UTC(+07:00) Entry & Exit Times
-🔮 Short-Term & Mid-Term Price Prediction
-🛡 Entry Zone, Take Profit, Stop Loss
-🔵Mostly of the Chances for Hit Tp1 or T2 or T3 suggest 1
-🔵IF I take profit on TP1, or 2, Where should I take my next position
-🛡 Profitable buy and sell Price,
-🔁 Reversal vs Continuation Clarity
-⏳ How many minutes or hours can this signal be used for?
-🧠 Market Behavior is positive, Negative or Neautral.
-🔵 What is the percentage accuracy of this signal?
-📢 Final Trade Advice (Mindset + Strategy)
-🧠 Strategy Type Suggestion
-📅 3-Day or Weekly Forecast
-📅 Is there any news or Update about Crypto that can Effect,
+📉 What is the overall trend direction? (Bullish, Bearish, or Sideways)
+📊 Provide a detailed breakdown of indicator behaviors — RSI, MACD, EMA, Volume, etc.
+⚠️ Scan for breakout or volatility pressure — Are we in a compression or expansion zone?
+🌡 Present a momentum heatmap — Is momentum rising or fading?
+📈 Analyze volume and OBV strength — Do they support the price movement?
+🧮 Identify key Fibonacci levels — Is the current price near a retracement or extension zone?
+⏳ Compare signals across multiple timeframes (1H, 4H, Daily) — Is there confluence?
+🐋 Detect whale movements vs. retail traders — Based on wallet activity or order book flow
+🕯 Identify strong candlestick patterns — Engulfing, Doji, Pin Bar, etc.
+🔄 Determine whether a reversal or continuation pattern is forming
+🕰 Suggest optimal entry and exit times (based on UTC+07:00 timezone)
+🧠 Describe the market behavior — Positive, Negative, or Neutral?
+📢 Offer final trading advice — Mindset, Psychology, and Position Sizing
+🧠 Suggest the best strategy type for this setup (Scalp, Swing, Position, or News-Driven)
+📅 Offer a 3-day or weekly forecast — What’s the expected asset behavior?
+📰 Is there any upcoming news or event that could impact the market or this asset?
+🟣 Are there conflicting signals among indicators? Which one is more reliable in this context?
+🔍 Is there any hidden or classic divergence visible (on RSI, MACD, or OBV)?
+🔧 Are the indicators suggesting pressure for a major move? What’s the likely direction?
+🧪 Compare current indicators with historically successful setups
+🧭 Is the price nearing any known liquidity pool zones?
+🛑 What is the invalidation level — the price point at which this setup fails?
+🔄 After a breakout, is a retest likely? Should we wait for confirmation?
+🌬️ Based on news, Twitter, and volume — what’s the real-time sentiment?
 
 `;
 
