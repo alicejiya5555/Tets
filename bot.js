@@ -4,7 +4,7 @@ import ti from "technicalindicators";
 import express from "express";
 
 // --- Bot Init ---
-const BOT_TOKEN = "7655482876:AAGKOpqruJsaMEj83k3svgYf9MGB1-3LL4w";
+const BOT_TOKEN = "7655482876:AAGu1F3V_pUbAwUu8wRpLjoy6lMJ2QCm4FY";
 const bot = new Telegraf(BOT_TOKEN);
 const PORT = process.env.PORT || 3000;
 
@@ -629,9 +629,9 @@ const ichimokuSection =
 `;
 
   // Your added custom words here:
-  const extraNotesParts = [
-`Calculate Values of all these Indicators and Give me Output:
-
+  const extraNotes =
+`
+Calculate Values of all thes Indicatotors and Give me Out Put:
 📍 Final Signal Summary
 📉 What is the overall trend direction? (Bullish, Bearish, or Sideways)
 🧠 Describe the market behavior — Positive, Negative, or Neutral?
@@ -661,15 +661,10 @@ const ichimokuSection =
 🐋 Detect whale movements vs. retail traders — Based on wallet activity or order book flow
 🕰 Suggest optimal entry and exit times (based on UTC+07:00 timezone)
 📅 Offer a 3-day or weekly forecast — What’s the expected asset behavior?
-📰 Is there any upcoming news or event that could impact the market or this asset?
-🧠 Suggest the best strategy type for this setup (Scalp, Swing, Position, or News-Driven)
-📢 Offer final trading advice — Mindset, Psychology, and Position Sizing
-🔁 Is this setup a reversal or continuation opportunity? How clear is the signal?
-⏳ How long will this signal remain valid? (Specify in minutes or hours)
-🟣 Are there conflicting signals among indicators? Which one is more reliable in this context?`
-];
 
- return header + smaSection + emaSection + wmaSection + macdSection + rsiSection + stochRsiSection + kdjSection + williamsSection + cciSection + rocSection + mtmSection + uoSection + adxSection + bbSection + keltnerSection + atrSection + adsocsection + mfiSection + vwapSection + ichimokuSection + extraNotesParts;
+`;
+
+ return header + smaSection + emaSection + wmaSection + macdSection + rsiSection + stochRsiSection + kdjSection + williamsSection + cciSection + rocSection + mtmSection + uoSection + adxSection + bbSection + keltnerSection + atrSection + adsocsection + mfiSection + vwapSection + ichimokuSection + extraNotes;
 }
 
 // --- Command Handler ---
