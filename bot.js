@@ -633,8 +633,7 @@ const ichimokuSection =
 `
 Calculate Values of all thes Indicatotors and Give me Out Put:
 📍 Final Signal Summary
-📉 What is the overall trend direction? (Bullish, Bearish, or Sideways)
-🧠 Describe the market behavior — Positive, Negative, or Neutral?
+📉 What is the overall trend direction? (Bullish, Bearish, or Sideways, positive,Negative, Neutral)
 📊 Provide a detailed breakdown of indicator behaviors — RSI, MACD, EMA, Volume, etc.
 🔍 Is there any hidden or classic divergence visible (on RSI, MACD, or OBV)?
 📈 Are EMAs aligned in a bullish or bearish structure?
