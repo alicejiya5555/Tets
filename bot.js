@@ -641,7 +641,6 @@ Calculate Values of all thes Indicatotors and Give me Out Put:
 📉 Analyze volume and OBV strength — Do they support the price movement?
 🧪 Compare current indicators with historically successful setups
 ⚠️ Scan for breakout or volatility pressure — Are we in a compression or expansion zone?
-🔧 Are the indicators suggesting pressure for a major move? What’s the likely direction?
 🔄 After a breakout, is a retest likely? Should we wait for confirmation?
 🌬️ Based on news, Twitter, and volume — what’s the real-time sentiment?
 🕯 Identify strong candlestick patterns — Engulfing, Doji, Pin Bar, etc.
@@ -650,8 +649,6 @@ Calculate Values of all thes Indicatotors and Give me Out Put:
 🐾 Is this setup potentially a bull trap or bear trap?
 🧮 Identify key Fibonacci levels — Is the current price near a retracement or extension zone?
 🧭 Is the price nearing any known liquidity pool zones?
-🛑 What is the invalidation level — the price point at which this setup fails?
-📐 For a medium risk profile, what strategic adjustments should be made?
 🛡 Highlight ideal zones for entry, take profit, and stop-loss
 🎯 Based on the setup, is TP1, TP2, or TP3 most likely to be hit?
 🔁 After taking profit at TP1 or TP2, suggest re-entry levels for the next move
