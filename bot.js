@@ -661,6 +661,11 @@ Calculate Values of all thes Indicatotors and Give me Out Put:
 🐋 Detect whale movements vs. retail traders — Based on wallet activity or order book flow
 🕰 Suggest optimal entry and exit times (based on UTC+07:00 timezone)
 📅 Offer a 3-day or weekly forecast — What’s the expected asset behavior?
+📰 Is there any upcoming news or event that could impact the market or this asset?
+🧠 Suggest the best strategy type for this setup (Scalp, Swing, Position, or News-Driven)
+📢 Offer final trading advice — Mindset, Psychology, and Position Sizing
+🔁 Is this setup a reversal or continuation opportunity? How clear is the signal?
+);
 
 `;
 
