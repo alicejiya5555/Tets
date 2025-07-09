@@ -629,8 +629,8 @@ const ichimokuSection =
 `;
 
   // Your added custom words here:
-  const extraNotes = JSON.stringify(`
-Calculate Values of all these Indicators and Give me Output:
+  const extraNotesParts = [
+`Calculate Values of all these Indicators and Give me Output:
 
 📍 Final Signal Summary
 📉 What is the overall trend direction? (Bullish, Bearish, or Sideways)
@@ -666,7 +666,8 @@ Calculate Values of all these Indicators and Give me Output:
 📢 Offer final trading advice — Mindset, Psychology, and Position Sizing
 🔁 Is this setup a reversal or continuation opportunity? How clear is the signal?
 ⏳ How long will this signal remain valid? (Specify in minutes or hours)
-🟣 Are there conflicting signals among indicators? Which one is more reliable in this context?
+🟣 Are there conflicting signals among indicators? Which one is more reliable in this context?`
+];
 `);
 
  return header + smaSection + emaSection + wmaSection + macdSection + rsiSection + stochRsiSection + kdjSection + williamsSection + cciSection + rocSection + mtmSection + uoSection + adxSection + bbSection + keltnerSection + atrSection + adsocsection + mfiSection + vwapSection + ichimokuSection + extraNotes;
