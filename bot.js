@@ -657,6 +657,16 @@ Calculate Values of all thes Indicatotors and Give me Out Put:
 🛑 What is the invalidation level — the price point at which this setup fails?
 🔄 After a breakout, is a retest likely? Should we wait for confirmation?
 🌬️ Based on news, Twitter, and volume — what’s the real-time sentiment?
+📈 Are EMAs aligned in a bullish or bearish structure?
+🌀 Are there any repeating fractal patterns from past cycles?
+🐾 Is this setup potentially a bull trap or bear trap?
+📐 For a medium risk profile, what strategic adjustments should be made?
+🛡 Highlight ideal zones for entry, take profit, and stop-loss
+🎯 Based on the setup, is TP1, TP2, or TP3 most likely to be hit?
+🔁 After taking profit at TP1 or TP2, suggest re-entry levels for the next move
+📉 Recommend profitable buy and sell price ranges for this asset
+🔁 Is this setup a reversal or continuation opportunity? How clear is the signal?
+⏳ How long will this signal remain valid? (Specify in minutes or hours)
 
 `;
 
