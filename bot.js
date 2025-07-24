@@ -32,6 +32,64 @@ function parseCommand(command) {
 
   return { symbol, interval };
 }
+
+// --- Bot Commands ---
+bot.start((ctx) => ctx.reply('Welcome to Crypto Signal Bot! Use /help for commands'));
+
+bot.help((ctx) => ctx.reply(`
+Available commands:
+/eth15m - ETH/USDT 15min signals
+/btc1h - BTC/USDT 1hr signals
+/link4h - LINK/USDT 4hr signals
+`));
+
+// Dynamic command handling
+bot.hears(/^\/(eth|btc|link)(15m|1h|4h|6h|12h)$/i, async (ctx) => {
+  const parsed = parseCommand(ctx.message.text);
+  if (!parsed) return ctx.reply('Invalid command format');
+
+  try {
+    ctx.reply(`Fetching ${parsed.symbol} ${parsed.interval} data...`);
+    // Add your trading logic here
+  } catch (err) {
+    console.error(err);
+    ctx.reply('Error processing request');
+  }
+});
+
+// --- Server Setup ---
+const app = express();
+app.use(bot.webhookCallback('/secret-path'));
+app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+// --- WebSocket Management ---
+function connectWebSocket(symbol, interval) {
+  if (socket) socket.close();
+  
+  const stream = `${symbol.toLowerCase()}@kline_${interval}`;
+  socket = new WebSocket(`${WS_URL}/${stream}`);
+
+  socket.on('message', (data) => {
+    const { k: candle } = JSON.parse(data);
+    if (!candleData[symbol]) candleData[symbol] = {};
+    candleData[symbol][interval] = {
+      open: parseFloat(candle.o),
+      high: parseFloat(candle.h),
+      low: parseFloat(candle.l),
+      close: parseFloat(candle.c),
+      volume: parseFloat(candle.v),
+      isClosed: candle.x
+    };
+  });
+}
+
+// Start bot
+bot.launch()
+  .then(() => console.log('Bot is running'))
+  .catch(err => console.error('Bot failed to start:', err));
+
+process.once('SIGINT', () => bot.stop('SIGINT'));
+process.once('SIGTERM', () => bot.stop('SIGTERM'));
 // ... rest of your code ...
 
 function formatNum(num) {
