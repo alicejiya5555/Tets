@@ -1048,32 +1048,40 @@ Calculate Values of all thes Indicatotors and Give me Out Put:
         extraNotes ;
 }
 
-// --- Command Handler ---
+// Command handler
 bot.on("text", async (ctx) => {
   const parsed = parseCommand(ctx.message.text);
   if (!parsed) return ctx.reply("❌ Invalid format. Try `/eth1h`, `/btc15m`, `/link4h`");
 
   try {
     const { symbol, interval } = parsed;
+    initWebSocket(symbol, interval); // Initialize WebSocket for this pair
     const { priceData, candles } = await getBinanceData(symbol, interval);
     const indicators = await calculateIndicators(candles);
     
-    // Derive friendly names
     const name = symbol.replace("USDT", "");
     const tfLabel = interval.toUpperCase();
     
     const message = generateOutput(priceData, indicators, name, tfLabel);
-    ctx.reply(message);
+    await ctx.reply(message);
   } catch (error) {
-    console.error(error);
-    ctx.reply("⚠️ Error fetching data. Please try again.");
+    console.error("Command error:", error);
+    await ctx.reply("⚠️ Error fetching data. Please try again.");
   }
 });
 
-// --- Web Server (keep-alive for Render/Heroku) ---
-const app = express();
+// Web server
 app.get("/", (req, res) => res.send("Bot is running"));
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
-  bot.launch();
+  bot.launch().then(() => console.log("Bot started"));
+});
+
+// Error handling
+process.on("unhandledRejection", (error) => {
+  console.error("Unhandled rejection:", error);
+});
+
+process.on("uncaughtException", (error) => {
+  console.error("Uncaught exception:", error);
 });
