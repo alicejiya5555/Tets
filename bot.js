@@ -5,7 +5,7 @@ import express from "express";
 import WebSocket from "ws";
 
 // --- Bot Init ---
-const BOT_TOKEN = "7965604896:AAHYAKapsBrHRDfpdrLMK3uAgbqWaWcXi7c";
+const BOT_TOKEN = "7965604896:AAE_s7P1nZHSaU500EP8rMs7O0aSDBT8WSM"; // Added directly (INSECURE for production)
 const bot = new Telegraf(BOT_TOKEN);
 const PORT = process.env.PORT || 3000;
 
@@ -32,6 +32,7 @@ function parseCommand(command) {
 
   return { symbol, interval };
 }
+// ... rest of your code ...
 
 function formatNum(num) {
   if (num === undefined || num === null || isNaN(num)) return "N/A";
