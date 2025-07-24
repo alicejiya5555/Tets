@@ -1048,14 +1048,14 @@ Calculate Values of all thes Indicatotors and Give me Out Put:
         extraNotes ;
 }
 
-// Command handler
+/ Command handler
 bot.on("text", async (ctx) => {
   const parsed = parseCommand(ctx.message.text);
   if (!parsed) return ctx.reply("❌ Invalid format. Try `/eth1h`, `/btc15m`, `/link4h`");
 
   try {
     const { symbol, interval } = parsed;
-    initWebSocket(symbol, interval); // Initialize WebSocket for this pair
+    initWebSocket(symbol, interval);
     const { priceData, candles } = await getBinanceData(symbol, interval);
     const indicators = await calculateIndicators(candles);
     
@@ -1070,8 +1070,10 @@ bot.on("text", async (ctx) => {
   }
 });
 
-// Web server
+// Web server routes - now app is properly defined
 app.get("/", (req, res) => res.send("Bot is running"));
+
+// Start the server and bot
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
   bot.launch().then(() => console.log("Bot started"));
