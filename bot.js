@@ -10,7 +10,10 @@ const PORT = process.env.PORT || 3000;
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 
 // FRED API key
-const FRED_API_KEY = 'abcdefghijklmnopqrstuvwxyz123456';
+const FRED_API_KEY = process.env.FRED_API_KEY;
+
+// Trading Economics API key
+const TE_API_KEY = process.env.TE_API_KEY;
 
 // Helper: compare actual vs expected
 function scoreNews(actual, expected, reverse = false) {
@@ -32,16 +35,33 @@ async function fetchLastObservations(series_id, count = 7) {
     }
 }
 
+// Fetch expected values from Trading Economics API
+async function fetchExpectedValues() {
+    try {
+        const url = `https://api.tradingeconomics.com/calendar?c=${TE_API_KEY}&country=United%20States&indicator=Consumer%20Price%20Index%20m/m,Core%20Consumer%20Price%20Index%20m/m,Initial%20Claims`;
+        const response = await axios.get(url);
+        const events = response.data.filter(event => event.actual !== null);
+        return events.reduce((acc, event) => {
+            if (event.name === 'Consumer Price Index m/m') {
+                acc.CPI_MM = event.forecast;
+            } else if (event.name === 'Core Consumer Price Index m/m') {
+                acc.CORE_CPI_MM = event.forecast;
+            } else if (event.name === 'Initial Claims') {
+                acc.UNEMPLOYMENT = event.forecast;
+            }
+            return acc;
+        }, {});
+    } catch (error) {
+        console.error('Error fetching expected values:', error.message);
+        return {};
+    }
+}
+
 // Main function to generate USD summary
 async function generateUsdSummary() {
-    const expectedValues = {
-        CPI_MM: 0.2,
-        CORE_CPI_MM: 0.15,
-        CPI_YY: 3.0,
-        UNEMPLOYMENT: 230000
-    };
+    const expectedValues = await fetchExpectedValues();
 
-    // --- Latest values ---
+    // Fetch latest actual values
     const CPI_MM = (await fetchLastObservations('CPIAUCNS', 1))[0];
     const CORE_CPI_MM = (await fetchLastObservations('CPILFENS', 1))[0];
     const CPI_YY = (await fetchLastObservations('CPIAUCNS', 13)).reduce((a, b, i, arr) => i === 0 ? 0 : a + (b - arr[i - 12]), 0) / 12; // rough YoY
