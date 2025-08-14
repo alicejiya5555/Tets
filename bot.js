@@ -7,7 +7,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Telegram Bot
-const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || '8384983472:AAFHyO9a33HtLqDnJ94G_cSQ1iVAA8kIzZg');
+const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN);
 
 // FRED API key
 const FRED_API_KEY = 'abcdefghijklmnopqrstuvwxyz123456';
@@ -22,13 +22,13 @@ function scoreNews(actual, expected, reverse = false) {
 // Fetch last N observations for a series
 async function fetchLastObservations(series_id, count = 7) {
     try {
-        const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${series_id}&api_key=${FRED_API_KEY}&file_type=json`;
+        const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${series_id}&api_key=${FRED_API_KEY}&file_type=json&frequency=m`;
         const response = await axios.get(url);
         const observations = response.data.observations.slice(-count);
         return observations.map(obs => parseFloat(obs.value));
     } catch (error) {
         console.error('Error fetching observations:', series_id, error.message);
-        return Array(count).fill(null);
+        return Array(count).fill(0);
     }
 }
 
@@ -42,10 +42,10 @@ async function generateUsdSummary() {
     };
 
     // --- Latest values ---
-    const CPI_MM = await fetchLastObservations('CPIAUCSL', 1)[0];
-    const CORE_CPI_MM = await fetchLastObservations('CPILFESL', 1)[0];
-    const CPI_YY = await fetchLastObservations('CPIAUCSL', 1)[0]; // can compute YoY if needed
-    const UNEMPLOYMENT = await fetchLastObservations('ICSA', 1)[0];
+    const CPI_MM = (await fetchLastObservations('CPIAUCNS', 1))[0];
+    const CORE_CPI_MM = (await fetchLastObservations('CPILFENS', 1))[0];
+    const CPI_YY = (await fetchLastObservations('CPIAUCNS', 13)).reduce((a, b, i, arr) => i === 0 ? 0 : a + (b - arr[i - 12]), 0) / 12; // rough YoY
+    const UNEMPLOYMENT = (await fetchLastObservations('ICSA', 1))[0];
 
     const scores = {
         'CPI m/m': scoreNews(CPI_MM, expectedValues.CPI_MM),
@@ -59,19 +59,20 @@ async function generateUsdSummary() {
     const cryptoTrend = totalScore > 0 ? '📉 Crypto Likely Down' : totalScore < 0 ? '📈 Crypto Likely Up' : '🟡 Crypto Neutral';
 
     // --- Last 1-week trend report ---
-    const trends = {};
     const seriesList = [
-        { key: 'CPI m/m', id: 'CPIAUCSL', reverse: false },
-        { key: 'Core CPI m/m', id: 'CPILFESL', reverse: false },
-        { key: 'CPI y/y', id: 'CPIAUCSL', reverse: false },
+        { key: 'CPI m/m', id: 'CPIAUCNS', reverse: false },
+        { key: 'Core CPI m/m', id: 'CPILFENS', reverse: false },
+        { key: 'CPI y/y', id: 'CPIAUCNS', reverse: false },
         { key: 'Unemployment Claims', id: 'ICSA', reverse: true }
     ];
 
+    const trends = {};
     for (let series of seriesList) {
         const obs = await fetchLastObservations(series.id, 7);
         let positive = 0, negative = 0, neutral = 0;
         for (let val of obs) {
-            let s = scoreNews(val, expectedValues[series.key.replace(/\s|\/|y|m/g,'').toUpperCase()], series.reverse);
+            const expKey = series.key.replace(/\s|\/|y|m/g,'').toUpperCase();
+            const s = scoreNews(val, expectedValues[expKey], series.reverse);
             if (s === 1) positive++;
             else if (s === -1) negative++;
             else neutral++;
@@ -88,7 +89,6 @@ async function generateUsdSummary() {
     }
     message += `\n💵 Total Score: ${totalScore}\n${usdTrend}\n${cryptoTrend}\n\n`;
 
-    // 1-week trend report
     message += '*📅 Last 1-week USD Trend:*\n';
     for (const key in trends) {
         const t = trends[key];
@@ -110,8 +110,8 @@ bot.command('usdnews', async (ctx) => {
 app.get('/', (req, res) => res.send('USD News Bot is running...'));
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-// Launch bot
-bot.launch().then(() => console.log('Telegram Bot started!'));
+// Launch bot safely
+bot.launch({ dropPendingUpdates: true }).then(() => console.log('Telegram Bot started!'));
 
 // Graceful shutdown
 process.once('SIGINT', () => bot.stop('SIGINT'));
