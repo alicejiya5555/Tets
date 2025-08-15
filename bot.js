@@ -7,13 +7,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Telegram Bot
-const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || '8384983472:AAFHyO9a33HtLqDnJ94G_cSQ1iVAA8kIzZg');
-
-// FRED API key
-const FRED_API_KEY = process.env.FRED_API_KEY || 'abcdefghijklmnopqrstuvwxyz123456';
+const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || 'YOUR_BOT_TOKEN');
 
 // Alpha Vantage API Key for real-time DXY
-const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY || 'NZGP2HRY88YKQSXX';
+const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY || 'YOUR_ALPHA_VANTAGE_API_KEY';
+
+// FRED API Key for economic indicators
+const FRED_API_KEY = process.env.FRED_API_KEY || 'YOUR_FRED_API_KEY';
 
 // Helper: compare actual vs expected
 function scoreNews(actual, expected, reverse = false) {
