@@ -36,11 +36,19 @@ async function fetchObservation(series_id) {
 // Fetch DXY from FRED (DTWEXBGS)
 async function fetchDXY() {
     try {
-        const dxyValue = await fetchObservation('DTWEXBGS'); // Broad U.S. Dollar Index
-        return { price: dxyValue ? dxyValue.toFixed(2) : 'N/A' };
+        const url = `https://api.stlouisfed.org/fred/series/observations?series_id=DTWEXBGS&api_key=${FRED_API_KEY}&file_type=json`;
+        const response = await axios.get(url);
+        const observations = response.data.observations;
+        if (!observations || observations.length === 0) {
+            return { price: 'N/A', date: 'Data not available' };
+        }
+        const latest = observations[observations.length - 1];
+        const price = parseFloat(latest.value).toFixed(2);
+        const date = latest.date || 'Unknown';
+        return { price, date };
     } catch (error) {
         console.error('Error fetching DXY:', error.message);
-        return { price: 'N/A' };
+        return { price: 'N/A', date: 'Error fetching data' };
     }
 }
 
@@ -83,6 +91,7 @@ async function generateUsdSummary() {
     message += `\n💵 Total Score: ${totalScore}\n${usdTrend}\n${cryptoTrend}\n\n`;
     message += `💵 *U.S. Dollar Index (DXY)*\n`;
     message += `Price: ${dxy.price}\n`;
+    message += `Last Updated: ${dxy.date}\n`;
 
     return message;
 }
