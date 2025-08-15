@@ -10,7 +10,10 @@ const PORT = process.env.PORT || 3000;
 const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || '8384983472:AAFHyO9a33HtLqDnJ94G_cSQ1iVAA8kIzZg');
 
 // FRED API key
-const FRED_API_KEY = 'abcdefghijklmnopqrstuvwxyz123456';
+const FRED_API_KEY = process.env.FRED_API_KEY || 'abcdefghijklmnopqrstuvwxyz123456';
+
+// RapidAPI Key for Yahoo Finance
+const RAPIDAPI_KEY = process.env.YF_API_KEY || '8afe270898msh18da50639058426p1946a5jsne2e1f323f943';
 
 // Helper: compare actual vs expected
 function scoreNews(actual, expected, reverse = false) {
@@ -33,22 +36,31 @@ async function fetchObservation(series_id) {
     }
 }
 
-// Fetch DXY from FRED (DTWEXBGS)
+// Fetch real-time DXY from Yahoo Finance via RapidAPI
 async function fetchDXY() {
     try {
-        const url = `https://api.stlouisfed.org/fred/series/observations?series_id=DTWEXBGS&api_key=${FRED_API_KEY}&file_type=json`;
-        const response = await axios.get(url);
-        const observations = response.data.observations;
-        if (!observations || observations.length === 0) {
-            return { price: 'N/A', date: 'Data not available' };
-        }
-        const latest = observations[observations.length - 1];
-        const price = parseFloat(latest.value).toFixed(2);
-        const date = latest.date || 'Unknown';
-        return { price, date };
+        const url = 'https://yfapi.net/v8/finance/chart/DX-Y.NYB?interval=1m&range=1d';
+        const response = await axios.get(url, {
+            headers: { 'X-API-KEY': RAPIDAPI_KEY }
+        });
+
+        const result = response.data.chart.result[0];
+        const timestamp = result.timestamp[result.timestamp.length - 1];
+        const close = result.indicators.quote[0].close[result.indicators.quote[0].close.length - 1];
+        const open = result.indicators.quote[0].open[result.indicators.quote[0].open.length - 1];
+        const high = result.indicators.quote[0].high[result.indicators.quote[0].high.length - 1];
+        const low = result.indicators.quote[0].low[result.indicators.quote[0].low.length - 1];
+
+        return {
+            price: close.toFixed(2),
+            open: open.toFixed(2),
+            high: high.toFixed(2),
+            low: low.toFixed(2),
+            time: new Date(timestamp * 1000).toUTCString()
+        };
     } catch (error) {
         console.error('Error fetching DXY:', error.message);
-        return { price: 'N/A', date: 'Error fetching data' };
+        return { price: 'N/A', open: 'N/A', high: 'N/A', low: 'N/A', time: 'N/A' };
     }
 }
 
@@ -91,7 +103,10 @@ async function generateUsdSummary() {
     message += `\n💵 Total Score: ${totalScore}\n${usdTrend}\n${cryptoTrend}\n\n`;
     message += `💵 *U.S. Dollar Index (DXY)*\n`;
     message += `Price: ${dxy.price}\n`;
-    message += `Last Updated: ${dxy.date}\n`;
+    message += `Open: ${dxy.open}\n`;
+    message += `High: ${dxy.high}\n`;
+    message += `Low: ${dxy.low}\n`;
+    message += `Last Updated: ${dxy.time}\n`;
 
     return message;
 }
