@@ -12,9 +12,6 @@ const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || '8384983472:AAFHyO9a3
 // FRED API key
 const FRED_API_KEY = 'abcdefghijklmnopqrstuvwxyz123456';
 
-// Yahoo Finance API Key for DXY
-const YF_API_KEY = process.env.YF_API_KEY || 'YOUR_RAPIDAPI_KEY';
-
 // Helper: compare actual vs expected
 function scoreNews(actual, expected, reverse = false) {
     if (actual > expected) return reverse ? -1 : 1;
@@ -22,7 +19,7 @@ function scoreNews(actual, expected, reverse = false) {
     return 0;
 }
 
-// Fetch latest observation for a series
+// Fetch latest observation for a FRED series
 async function fetchObservation(series_id) {
     try {
         const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${series_id}&api_key=${FRED_API_KEY}&file_type=json`;
@@ -36,34 +33,14 @@ async function fetchObservation(series_id) {
     }
 }
 
-// Fetch current DXY price from Yahoo Finance
+// Fetch DXY from FRED (DTWEXBGS)
 async function fetchDXY() {
     try {
-        const url = 'https://yfapi.net/v8/finance/chart/DX-Y.NYB?interval=1m&range=1d';
-        const response = await axios.get(url, {
-            headers: { 'X-API-KEY': YF_API_KEY }
-        });
-
-        const result = response.data.chart.result[0];
-        const meta = result.meta;
-        const timestamp = result.timestamp[result.timestamp.length - 1];
-        const close = result.indicators.quote[0].close[result.indicators.quote[0].close.length - 1];
-
-        const date = new Date(timestamp * 1000).toUTCString();
-        const open = result.indicators.quote[0].open[result.indicators.quote[0].open.length - 1];
-        const high = result.indicators.quote[0].high[result.indicators.quote[0].high.length - 1];
-        const low = result.indicators.quote[0].low[result.indicators.quote[0].low.length - 1];
-
-        return {
-            price: close.toFixed(2),
-            open: open.toFixed(2),
-            high: high.toFixed(2),
-            low: low.toFixed(2),
-            time: date
-        };
+        const dxyValue = await fetchObservation('DTWEXBGS'); // Broad U.S. Dollar Index
+        return { price: dxyValue ? dxyValue.toFixed(2) : 'N/A' };
     } catch (error) {
         console.error('Error fetching DXY:', error.message);
-        return { price: 'N/A', open: 'N/A', high: 'N/A', low: 'N/A', time: 'N/A' };
+        return { price: 'N/A' };
     }
 }
 
@@ -106,10 +83,6 @@ async function generateUsdSummary() {
     message += `\n💵 Total Score: ${totalScore}\n${usdTrend}\n${cryptoTrend}\n\n`;
     message += `💵 *U.S. Dollar Index (DXY)*\n`;
     message += `Price: ${dxy.price}\n`;
-    message += `Open: ${dxy.open}\n`;
-    message += `High: ${dxy.high}\n`;
-    message += `Low: ${dxy.low}\n`;
-    message += `Last Updated: ${dxy.time}\n`;
 
     return message;
 }
