@@ -12,8 +12,8 @@ const bot = new Telegraf(process.env.TELEGRAM_BOT_TOKEN || '8384983472:AAFHyO9a3
 // FRED API key
 const FRED_API_KEY = process.env.FRED_API_KEY || 'abcdefghijklmnopqrstuvwxyz123456';
 
-// RapidAPI Key for Yahoo Finance
-const RAPIDAPI_KEY = process.env.YF_API_KEY || '8afe270898msh18da50639058426p1946a5jsne2e1f323f943';
+// Alpha Vantage API Key for real-time DXY
+const ALPHA_VANTAGE_API_KEY = process.env.ALPHA_VANTAGE_API_KEY || 'NZGP2HRY88YKQSXX';
 
 // Helper: compare actual vs expected
 function scoreNews(actual, expected, reverse = false) {
@@ -36,27 +36,23 @@ async function fetchObservation(series_id) {
     }
 }
 
-// Fetch real-time DXY from Yahoo Finance via RapidAPI
+// Fetch real-time DXY from Alpha Vantage
 async function fetchDXY() {
     try {
-        const url = 'https://yfapi.net/v8/finance/chart/DX-Y.NYB?interval=1m&range=1d';
-        const response = await axios.get(url, {
-            headers: { 'X-API-KEY': RAPIDAPI_KEY }
-        });
+        const url = `https://www.alphavantage.co/query?function=TIME_SERIES_INTRADAY&symbol=DX-Y.NYB&interval=1min&apikey=${ALPHA_VANTAGE_API_KEY}`;
+        const response = await axios.get(url);
+        const data = response.data['Time Series (1min)'];
+        if (!data) return { price: 'N/A', open: 'N/A', high: 'N/A', low: 'N/A', time: 'N/A' };
 
-        const result = response.data.chart.result[0];
-        const timestamp = result.timestamp[result.timestamp.length - 1];
-        const close = result.indicators.quote[0].close[result.indicators.quote[0].close.length - 1];
-        const open = result.indicators.quote[0].open[result.indicators.quote[0].open.length - 1];
-        const high = result.indicators.quote[0].high[result.indicators.quote[0].high.length - 1];
-        const low = result.indicators.quote[0].low[result.indicators.quote[0].low.length - 1];
+        const latestTime = Object.keys(data)[0];
+        const latestData = data[latestTime];
 
         return {
-            price: close.toFixed(2),
-            open: open.toFixed(2),
-            high: high.toFixed(2),
-            low: low.toFixed(2),
-            time: new Date(timestamp * 1000).toUTCString()
+            price: parseFloat(latestData['4. close']).toFixed(2),
+            open: parseFloat(latestData['1. open']).toFixed(2),
+            high: parseFloat(latestData['2. high']).toFixed(2),
+            low: parseFloat(latestData['3. low']).toFixed(2),
+            time: latestTime
         };
     } catch (error) {
         console.error('Error fetching DXY:', error.message);
